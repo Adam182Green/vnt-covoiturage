@@ -3,7 +3,7 @@ import { NavController, IonicPage } from 'ionic-angular';
 
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
-import { Account } from '../../model/Account';
+import { Compte } from '../../model/Compte';
 
 import { LoginPage } from '../../pages/login/login';
  
@@ -12,7 +12,7 @@ import { LoginPage } from '../../pages/login/login';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  account: Account;
+  account: Compte;
 
   constructor(private navCtrl: NavController, private auth: AuthServiceProvider) {
     this.account = this.auth.getAccount();

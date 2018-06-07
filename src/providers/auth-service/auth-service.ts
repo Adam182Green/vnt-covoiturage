@@ -1,15 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { Account } from '../../model/Account'
+import { Compte } from '../../model/Compte';
 
 @Injectable()
 export class AuthServiceProvider {
 
-  currentAccount: Account;
+  currentAccount: Compte;
+  comptesCollection: AngularFirestoreCollection<Compte>;
+  comptes: Observable<Compte[]>;  
+
+  constructor(public afDB: AngularFirestore){}
 
   public login(credentials) {
     if (credentials.email === null || credentials.password === null) {
@@ -17,10 +22,21 @@ export class AuthServiceProvider {
     } else {
       return Observable.create(observer => {
         // At this point make a request to your backend to make a real check!
-        let access = (credentials.password === "pass" && credentials.email === "email");
-        this.currentAccount = new Account('test@test.com', 'test', 'TestFirstName', 'TestSurname');
-        observer.next(access);
-        observer.complete();
+        this.comptesCollection = this.afDB.collection('comptes', ref => ref.where('email', '==', credentials.email).where('motDePasse', '==', credentials.password));
+        this.comptes = this.comptesCollection.valueChanges();
+
+        this.comptes.subscribe((comptesData: Compte[]) => {
+          if(comptesData.length == 0){
+            observer.next(false);
+            observer.complete();
+          } else {
+            comptesData.forEach((compte: Compte) => {
+              this.currentAccount = compte;
+              observer.next(true);
+              observer.complete();
+            });
+          }
+        });    
       });
     }
   }
@@ -37,7 +53,7 @@ export class AuthServiceProvider {
     }
   }
  
-  public getAccount() : Account {
+  public getAccount() : Compte {
     return this.currentAccount;
   }
  

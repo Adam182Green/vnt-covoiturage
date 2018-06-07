@@ -22,11 +22,11 @@ export class LoginPage {
  
   public login() {
     this.showLoading()
-    this.auth.login(this.registerCredentials).subscribe(allowed => {
-      if (allowed) {        
+    this.auth.login(this.registerCredentials).subscribe(found => {
+      if (found) {        
         this.navCtrl.setRoot(HomePage);
       } else {
-        this.showError("Accès refusé");
+        this.showError("Compte introuvable");
       }
     },
       error => {
