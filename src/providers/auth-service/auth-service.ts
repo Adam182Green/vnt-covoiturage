@@ -21,9 +21,12 @@ export class AuthServiceProvider {
       return Observable.throw("Veuillez saisir vos identifiants");
     } else {
       return Observable.create(observer => {
-        // At this point make a request to your backend to make a real check!
         this.comptesCollection = this.afDB.collection('comptes', ref => ref.where('email', '==', credentials.email).where('motDePasse', '==', credentials.password));
-        this.comptes = this.comptesCollection.valueChanges();
+        
+
+
+       // var value = this.afDB.firestore.collection('comptes').where('email', '==', credentials.email).where('motDePasse', '==', credentials.password);        this.comptes = this.comptesCollection.valueChanges();
+
 
         this.comptes.subscribe((comptesData: Compte[]) => {
           if(comptesData.length == 0){
@@ -32,6 +35,7 @@ export class AuthServiceProvider {
           } else {
             comptesData.forEach((compte: Compte) => {
               this.currentAccount = compte;
+              //console.log(compte.reservations[0]._key.path.segments[6]);
               observer.next(true);
               observer.complete();
             });

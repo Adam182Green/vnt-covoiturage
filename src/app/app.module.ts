@@ -12,11 +12,14 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
+import { MesReservationsPage } from '../pages/mes-reservations/mes-reservations';
+import { MesTrajetsPage } from '../pages/mes-trajets/mes-trajets';
 import { RegisterPage } from '../pages/register/register';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { FirestoreProvider } from '../providers/firestore/firestore';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
     HomePage,
     ListPage,
     LoginPage,
+    MesReservationsPage,
+    MesTrajetsPage,
     RegisterPage
   ],
   imports: [
@@ -40,6 +45,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
     HomePage,
     ListPage,
     LoginPage,
+    MesReservationsPage,
+    MesTrajetsPage,
     RegisterPage
   ],
   providers: [
@@ -48,7 +55,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
     AngularFireDatabase,
     AngularFirestore,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthServiceProvider
+    AuthServiceProvider,
+    FirestoreProvider
   ]
 })
 export class AppModule {}
