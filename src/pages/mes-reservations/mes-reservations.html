@@ -8,9 +8,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="showReservations==true">
-    <button ion-item *ngFor="let reservation of currentAccount.reservations" (click)="onReservationClick($event, reservation)">
+    <button ion-item *ngFor="let reservation of this.currentAccount.reservations" (click)="onReservationClick($event, reservation)">
       {{reservation.etat}}.
+      {{reservation.trajet.villeArrivee}}
     </button>
-  </ion-list>
 </ion-content>

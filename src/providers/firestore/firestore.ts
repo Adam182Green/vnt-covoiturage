@@ -7,47 +7,48 @@ import {Observable} from 'rxjs/Observable';
 
 import { Compte } from '../../model/Compte';
 import { Reservation } from '../../model/Reservation';
+import { Trajet } from '../../model/Trajet';
 
 @Injectable()
 export class FirestoreProvider {
 
-  constructor(private afDB: AngularFirestore) {
-    
-  }
+  constructor(private afDB: AngularFirestore) { }
 
   public getAccountReservations(account: Compte){
-	var ids = [];
-	account.reservations.forEach((res) => {
-		console.log(res);
-		ids.concat(res._key.path.segments[6]);
-	})
-
-	//doesn't work because reservations is undefined
-
-	return this.getReservationsById(ids);
+  	return Observable.create(observer => {
+	  	account.reservations = [];
+		this.afDB.firestore.collection('reservations')
+			.where('demandeur', '==', account.ref)
+			.where('etat', '==', 'en cours')
+			.get().then((doc) => {
+	          if(doc.empty){
+	             observer.next(false);
+	             observer.complete();
+	          } else {
+	            doc.forEach(item => {
+	              var reservation = item.data() as Reservation;
+	              reservation.ref = item.ref;
+	              this.getTrajetByReference(reservation.trajet).subscribe(trajet => {
+	              	reservation.trajet = trajet;
+	              	account.reservations.push(reservation);
+	              });
+	            });
+	          }
+	          observer.next(true);
+	          observer.complete();
+	        });
+    });
   }
 
-  private getReservationsById(ids: string[]){
-  	var reservations = [];
-  	var nbIds = ids.length;
-
-  	console.log("Start of getReservations, nbIds: " + nbIds);
-
-  	return Observable.create(observer => {
-  		console.log("Start of Observable.create");
-	  	for(var id in ids){
-	  		var reservationDoc = this.afDB.doc<Reservation>('reservations/' + id);
-	  		var reservation = reservationDoc.valueChanges();
-	  		console.log(reservation);
-	  		reservation.subscribe((res) => {
-	  			reservations.concat(res);
-	  			console.log("res n°" + reservations.length)
-	  			if(reservations.length == nbIds) {
-	  				observer.next(reservations);
-	  				observer.complete();
-	  			}
-	  		});
-	  	}
-	});
+  public getTrajetByReference(reference: any){
+	return Observable.create(observer => {
+	this.afDB.firestore.doc(reference.path)
+		.get().then((doc) => {
+              var trajet = doc.data() as Trajet;
+              trajet.ref = doc.ref;
+              observer.next(trajet);
+          	  observer.complete();
+            });
+    });
   }
 }

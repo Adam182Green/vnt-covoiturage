@@ -16,16 +16,14 @@ export class MesReservationsPage {
 
 	currentAccount: Compte;
 	reservations: Reservation[];
-	showReservations = false;
 
 	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider) { 
 		this.currentAccount = this.auth.currentAccount;
 
-		this.firestore.getAccountReservations(this.currentAccount).subscribe((reservations) => {
-			this.reservations = reservations;
-			this.showReservations = true;
-			console.log("show = true");
-			console.log(reservations);
+		this.firestore.getAccountReservations(this.currentAccount).subscribe((found) => {
+			if(found){
+				console.log(this.currentAccount);
+			}
 		})
 	}
 

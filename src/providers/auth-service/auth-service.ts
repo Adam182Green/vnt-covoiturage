@@ -6,13 +6,12 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { Compte } from '../../model/Compte';
+import { Reservation } from '../../model/Reservation';
 
 @Injectable()
 export class AuthServiceProvider {
 
   currentAccount: Compte;
-  comptesCollection: AngularFirestoreCollection<Compte>;
-  comptes: Observable<Compte[]>;  
 
   constructor(public afDB: AngularFirestore){}
 
@@ -21,26 +20,22 @@ export class AuthServiceProvider {
       return Observable.throw("Veuillez saisir vos identifiants");
     } else {
       return Observable.create(observer => {
-        this.comptesCollection = this.afDB.collection('comptes', ref => ref.where('email', '==', credentials.email).where('motDePasse', '==', credentials.password));
-        
 
+        var getAccountQuery = this.afDB.firestore.collection('comptes').where('email', '==', credentials.email).where('motDePasse', '==', credentials.password);
 
-       // var value = this.afDB.firestore.collection('comptes').where('email', '==', credentials.email).where('motDePasse', '==', credentials.password);        this.comptes = this.comptesCollection.valueChanges();
-
-
-        this.comptes.subscribe((comptesData: Compte[]) => {
-          if(comptesData.length == 0){
-            observer.next(false);
-            observer.complete();
+        getAccountQuery.get().then((doc) => {
+          if(doc.empty){
+             observer.next(false);
+             observer.complete();
           } else {
-            comptesData.forEach((compte: Compte) => {
-              this.currentAccount = compte;
-              //console.log(compte.reservations[0]._key.path.segments[6]);
-              observer.next(true);
-              observer.complete();
+            doc.forEach(item => {
+              this.currentAccount = item.data() as Compte;
+              this.currentAccount.ref = item.ref;
             });
           }
-        });    
+          observer.next(true);
+          observer.complete();
+        });
       });
     }
   }
