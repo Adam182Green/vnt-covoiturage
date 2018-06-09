@@ -10,11 +10,13 @@ import { FIREBASE_CONFIG } from './firestore.config';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { JourneyPage } from '../pages/journey/journey';
 import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
 import { MesReservationsPage } from '../pages/mes-reservations/mes-reservations';
 import { MesTrajetsPage } from '../pages/mes-trajets/mes-trajets';
 import { RegisterPage } from '../pages/register/register';
+import { ReservationPage } from '../pages/reservation/reservation';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -25,11 +27,13 @@ import { FirestoreProvider } from '../providers/firestore/firestore';
   declarations: [
     MyApp,
     HomePage,
+    JourneyPage,
     ListPage,
     LoginPage,
     MesReservationsPage,
     MesTrajetsPage,
-    RegisterPage
+    RegisterPage,
+    ReservationPage
   ],
   imports: [
     BrowserModule,
@@ -43,11 +47,13 @@ import { FirestoreProvider } from '../providers/firestore/firestore';
   entryComponents: [
     MyApp,
     HomePage,
+    JourneyPage,
     ListPage,
     LoginPage,
     MesReservationsPage,
     MesTrajetsPage,
-    RegisterPage
+    RegisterPage,
+    ReservationPage
   ],
   providers: [
     StatusBar,

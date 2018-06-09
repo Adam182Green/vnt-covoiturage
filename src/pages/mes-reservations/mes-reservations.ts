@@ -4,6 +4,8 @@ import { IonicPage, NavController, NavParams, LoadingController, Loading } from 
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 
+import { ReservationPage } from '../../pages/reservation/reservation';
+
 import { Compte } from '../../model/Compte';
 import { Reservation } from '../../model/Reservation';
 
@@ -31,10 +33,10 @@ export class MesReservationsPage {
 		});
 	}
 
-	onReservationClick(event, item) {
-		/*this.navCtrl.push(ReservationPage, {
-  		item: item
-		});*/
+	onReservationClick(event, reservation) {
+		this.navCtrl.push(ReservationPage, {
+  			reservation: reservation
+		});
 	}
 
 	showLoading() {
