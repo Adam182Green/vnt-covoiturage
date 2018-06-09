@@ -2,7 +2,6 @@ import { Note } from './Note';
 import { Reservation } from './Reservation';
 import { Trajet } from './Trajet';
 import { Voiture } from './Voiture';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 export class Compte {
 	ref: any;

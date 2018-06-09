@@ -40,6 +40,18 @@ export class FirestoreProvider {
     });
   }
 
+  public getReservationByReference(reference: any) {
+	return Observable.create(observer => {
+		var docRef = this.afDB.firestore.doc(reference.path);
+		docRef.get().then((doc) => {
+              var reservation = doc.data() as Reservation;
+              reservation.ref = doc.ref;
+              observer.next(reservation);
+          	  observer.complete();
+            });
+    });
+  }
+
   public getTrajetByReference(reference: any){
 	return Observable.create(observer => {
 	this.afDB.firestore.doc(reference.path)
