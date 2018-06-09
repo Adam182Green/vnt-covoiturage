@@ -6,8 +6,10 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 import {Observable} from 'rxjs/Observable';
 
 import { Compte } from '../../model/Compte';
+import { Note } from '../../model/Note';
 import { Reservation } from '../../model/Reservation';
 import { Trajet } from '../../model/Trajet';
+import { Voiture } from '../../model/Voiture';
 
 @Injectable()
 export class FirestoreProvider {
@@ -28,7 +30,7 @@ export class FirestoreProvider {
 	            doc.forEach(item => {
 	              var reservation = item.data() as Reservation;
 	              reservation.ref = item.ref;
-	              this.getTrajetByReference(reservation.trajet).subscribe(trajet => {
+	              this.getJourneyByReference(reservation.trajet).subscribe(trajet => {
 	              	reservation.trajet = trajet;
 	              	account.reservations.push(reservation);
 	              });
@@ -40,27 +42,64 @@ export class FirestoreProvider {
     });
   }
 
-  public getReservationByReference(reference: any) {
-	return Observable.create(observer => {
-		var docRef = this.afDB.firestore.doc(reference.path);
-		docRef.get().then((doc) => {
-              var reservation = doc.data() as Reservation;
-              reservation.ref = doc.ref;
-              observer.next(reservation);
-          	  observer.complete();
-            });
+  public getJourneyInformation(journey: Trajet){
+  	return Observable.create(observer => {
+  		this.getVehicleByReference(journey.voiture).subscribe(vehicle => {
+  			this.getAccountByReference(journey.conducteur).subscribe(account => {
+  				journey.voiture = vehicle;
+  				journey.conducteur = account;
+  				observer.next(true);
+  				observer.complete();
+  			});
+  		});
+  	});
+  }
+
+  public getAccountByReference(reference: any){
+  	return Observable.create(observer => {
+		this.afDB.firestore.doc(reference.path)
+		.get().then((doc) => {
+            var account = doc.data() as Compte;
+            account.ref = doc.ref;
+            observer.next(account);
+          	observer.complete();
+        });
     });
   }
 
-  public getTrajetByReference(reference: any){
+  public getJourneyByReference(reference: any){
 	return Observable.create(observer => {
-	this.afDB.firestore.doc(reference.path)
+		this.afDB.firestore.doc(reference.path)
 		.get().then((doc) => {
-              var trajet = doc.data() as Trajet;
-              trajet.ref = doc.ref;
-              observer.next(trajet);
-          	  observer.complete();
-            });
+            var trajet = doc.data() as Trajet;
+            trajet.ref = doc.ref;
+            observer.next(trajet);
+          	observer.complete();
+        });
+    });
+  }
+
+  public getReservationByReference(reference: any) {
+	return Observable.create(observer => {
+		this.afDB.firestore.doc(reference.path)
+		.get().then((doc) => {
+            var reservation = doc.data() as Reservation;
+            reservation.ref = doc.ref;
+            observer.next(reservation);
+          	observer.complete();
+        });
+    });
+  }
+
+  public getVehicleByReference(reference: any){
+  	return Observable.create(observer => {
+		this.afDB.firestore.doc(reference.path)
+		.get().then((doc) => {
+            var vehicle = doc.data() as Voiture;
+            vehicle.ref = doc.ref;
+            observer.next(vehicle);
+          	observer.complete();
+        });
     });
   }
 }

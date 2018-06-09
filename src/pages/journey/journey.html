@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Journey</ion-title>
+    <ion-title>Trajet</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -15,6 +15,14 @@
 
 <ion-content padding>
 	Départ le {{this.journey.dateDepart}} de {{this.journey.villeDepart}} à {{this.journey.villeArrivee}}.
+
+	<p>Places restantes: {{this.journey.nombreDePlaces}}</p>
+
+	<p>Informations du conducteur:
+	{{this.journey.conducteur.prenom}} {{this.journey.conducteur.nom}}</p>
+
+	<p>Informations du véhicule:
+	{{this.journey.voiture.marque}} {{this.journey.voiture.modele}}</p>
 
 	<button ion-button (click)="onClickButtonReserve()">Réserver</button>
 </ion-content>

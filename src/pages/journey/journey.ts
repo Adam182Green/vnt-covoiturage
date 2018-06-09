@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { FirestoreProvider } from '../../providers/firestore/firestore';
 
 import { Trajet } from '../../model/Trajet';
 
@@ -11,11 +12,12 @@ import { Trajet } from '../../model/Trajet';
 export class JourneyPage {
 
 	journey: Trajet;
-	leaveDate = "";
 
-  	constructor(public navCtrl: NavController, public navParams: NavParams) {
+  	constructor(public navCtrl: NavController, public navParams: NavParams, public firestore: FirestoreProvider) {
   		this.journey = navParams.get('journey');
-  		this.leaveDate = this.journey.dateDapart.toDateString();
+  		this.firestore.getJourneyInformation(this.journey).subscribe(found => {
+
+  		});
   	}
 
   	onClickButtonReserve(){

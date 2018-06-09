@@ -7,13 +7,14 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>reservation</ion-title>
+    <ion-title>Reservation</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-<p>Etat: {{this.reservation.etat}}</p>
-<button ion-button (click)="onClickJourneyInformationButton()">Informations du trajet</button>
+	<p>Etat: {{this.reservation.etat}}</p>
+	<button ion-button (click)="onClickJourneyInformationButton()"><ion-icon name = "information-circle"></ion-icon>Informations du trajet</button>
+
 </ion-content>
