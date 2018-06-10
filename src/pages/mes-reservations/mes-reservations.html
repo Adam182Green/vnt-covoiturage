@@ -8,10 +8,8 @@
 </ion-header>
 
 <ion-content>
-    <button ion-item *ngFor="let reservation of this.currentAccount.reservations" (click)="onReservationClick($event, reservation)">
-        <div *ngIf="reservation.trajet != undefined">
-          {{reservation.trajet.villeDepart}} - {{reservation.trajet.villeArrivee}}
-        </div>
+    <button ion-item *ngFor="let reservation of this.reservations" (click)="onReservationClick($event, reservation)">
+        {{reservation.trajet.villeDepart}} - {{reservation.trajet.villeArrivee}}
         {{reservation.etat}}
     </button>
 </ion-content>

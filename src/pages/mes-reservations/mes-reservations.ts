@@ -23,9 +23,9 @@ export class MesReservationsPage {
 	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider, public loading: LoadingProvider) {
 		this.loading.show('Veuillez patienter...');
 		this.currentAccount = this.auth.currentAccount;
-		this.firestore.getAccountReservations(this.currentAccount).subscribe(success => {
-			if(success){
-				
+		this.firestore.getAccountReservations(this.currentAccount).subscribe(queryResult => {
+			if(queryResult.success){
+				this.reservations = queryResult.result;
 			} else {
 				//show error
 			}

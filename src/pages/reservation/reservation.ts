@@ -17,11 +17,20 @@ import { Reservation } from '../../model/Reservation';
 export class ReservationPage {
 
 	reservation: Reservation;
+	reservationBelongsToCurrentUser = false;
+	currentUserIsJourneyDriver = false;
 
   	constructor(public navCtrl: NavController, public navParams: NavParams, public firestore: FirestoreProvider, public auth: AuthServiceProvider, public loading: LoadingProvider) {
 	  	this.loading.show('Veuillez patienter...');
 	  	this.reservation = navParams.get('reservation');
-	  	this.firestore.getReservationInformation(this.reservation).subscribe(found => {
+	  	this.firestore.getReservationInformation(this.reservation).subscribe(queryResult => {
+	  		this.reservation = queryResult.result;
+	  		if(this.auth.currentAccount.ref.path == this.reservation.demandeur.ref.path){
+	  			this.reservationBelongsToCurrentUser = true;
+	  		}
+	  		if(this.auth.currentAccount.ref.path == this.reservation.trajet.conducteur.ref.path){
+	  			this.currentUserIsJourneyDriver = true;
+	  		}
 	  		this.loading.hide();
 	  	});
   	}
@@ -30,5 +39,21 @@ export class ReservationPage {
 	  	this.navCtrl.push(JourneyPage, {
 	  		journey: this.reservation.trajet
 		});
+  	}
+
+  	onClickCancelReservation(){
+  		this.reservation.etat = 'annulee';
+  		this.loading.show('Veuillez patienter...');
+  		this.firestore.updateReservation(this.reservation).subscribe(success => {
+  			this.loading.hide();
+  		});
+  	}
+
+  	onClickValidateReservation(){
+		this.reservation.etat = 'validee';
+		this.loading.show('Veuillez patienter...');
+  		this.firestore.updateReservation(this.reservation).subscribe(success => {
+  			this.loading.hide();
+  		});
   	}
 }

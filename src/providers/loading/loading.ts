@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController, Loading } from 'ionic-angular';
 
@@ -10,14 +9,18 @@ export class LoadingProvider {
   	constructor(public loadingCtrl: LoadingController) { }
 
   	public show(message: string) {
-	    this.loading = this.loadingCtrl.create({
-	      content: message,
-	      dismissOnPageChange: true
-	    });
-	    this.loading.present();
+  		if(!this.loading){
+		    this.loading = this.loadingCtrl.create({
+		      content: message
+		    });
+		    this.loading.present();
+		}
   	}
 
   	public hide(){
-  		this.loading.dismiss();
+  		if(this.loading){
+  			this.loading.dismiss();
+  			this.loading = null;
+  		}
   	}
 }

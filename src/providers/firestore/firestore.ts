@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
@@ -10,59 +9,71 @@ import { Note } from '../../model/Note';
 import { Reservation } from '../../model/Reservation';
 import { Trajet } from '../../model/Trajet';
 import { Voiture } from '../../model/Voiture';
+import { FirestoreQueryResult } from '../../model/FirestoreQueryResult';
 
 @Injectable()
 export class FirestoreProvider {
 
   constructor(private afDB: AngularFirestore) { }
 
-  public getAccountReservations(account: Compte){
-  	return Observable.create(observer => {
-	  	account.reservations = [];
-		this.afDB.firestore.collection('reservations')
+  	public getAccountReservations(account: Compte): Observable<FirestoreQueryResult>{
+	  	return Observable.create(observer => {
+	  		var queryResult = new FirestoreQueryResult();
+			queryResult.result = [];
+			this.afDB.firestore.collection('reservations')
 			.where('demandeur', '==', account.ref)
 			.where('etat', '==', 'en cours')
 			.get().then((doc) => {
-	          if(doc.empty){
-	             observer.next(false);
-	             observer.complete();
-	          } else {
-	            doc.forEach(item => {
-	              var reservation = item.data() as Reservation;
-	              reservation.ref = item.ref;
-	              this.getJourneyByReference(reservation.trajet).subscribe(trajet => {
-	              	reservation.trajet = trajet;
-	              	account.reservations.push(reservation);
-	              });
-	            });
-	          }
-	          observer.next(true);
-	          observer.complete();
-	        });
-    });
-  }
+	          	if(doc.empty){
+		            observer.next(false);
+		            observer.complete();
+		        } else {
+		            doc.forEach(item => {
+		            	var reservation = item.data() as Reservation;
+		            	reservation.ref = item.ref;
+		              	this.getJourneyByReference(reservation.trajet).subscribe(trajet => {
+			              	reservation.trajet = trajet;
+			              	queryResult.result.push(reservation);
+			            });
+			        });
+			    }
+		  		queryResult.success = true;
+		        observer.next(queryResult);
+		        observer.complete();
+		    });
+	    });
+  	}
 
-  public getJourneyInformation(journey: Trajet){
+  public getJourneyInformation(journey: Trajet): Observable<FirestoreQueryResult>{
   	return Observable.create(observer => {
+  		var queryResult = new FirestoreQueryResult();
   		this.getVehicleByReference(journey.voiture).subscribe(vehicle => {
   			this.getAccountByReference(journey.conducteur).subscribe(account => {
-  				journey.voiture = vehicle;
-  				journey.conducteur = account;
-  				observer.next(true);
+  				queryResult.result.voiture = vehicle;
+  				queryResult.result.conducteur = account;
+  				observer.next(queryResult);
   				observer.complete();
   			});
   		});
   	});
   }
 
-  public getReservationInformation(reservation: Reservation){
+  public getReservationInformation(reservation: Reservation): Observable<FirestoreQueryResult>{
   		return Observable.create(observer => {
-  			this.getReservationByReference(reservation).subscribe(reservation => {
-	  			this.getJourneyByReference(reservation.trajet).subscribe(journey => {
-	  				reservation = reservation;
-	  				reservation.trajet = journey;
-	  				observer.next(true);
-  					observer.complete();
+  			this.getReservationByReference(reservation.ref).subscribe(resa => {
+	  			this.getJourneyByReference(resa.trajet).subscribe(journey => {
+	  				this.getAccountByReference(resa.demandeur).subscribe(asker => {
+	  					this.getAccountByReference(journey.conducteur).subscribe(driver => {
+	  						var queryResult = new FirestoreQueryResult();
+	  						queryResult.success = true;
+		  					queryResult.result = resa;
+			  				queryResult.result.trajet = journey;
+			  				queryResult.result.trajet.conducteur = driver;
+			  				queryResult.result.demandeur = asker;
+			  				observer.next(queryResult);
+		  					observer.complete();
+		  				});
+	  				});
 	  			});
 	  		});
   		});
@@ -114,5 +125,21 @@ export class FirestoreProvider {
           	observer.complete();
         });
     });
+  }
+
+  public updateReservation(reservation: Reservation){
+  	return Observable.create(observer => {
+  		console.log(reservation.ref);
+  		this.afDB.firestore.doc(reservation.ref.path)
+  		.update({'etat': reservation.etat})
+  		.then(() => {
+  			observer.next(true);
+          	observer.complete();
+  		})
+  		.catch((error) => {
+  			observer.next(false);
+          	observer.complete();
+  		});
+  	});
   }
 }
