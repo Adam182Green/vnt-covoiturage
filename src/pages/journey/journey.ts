@@ -5,6 +5,8 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { LoadingProvider } from '../../providers/loading/loading';
 
+import { DateHelper } from '../../providers/date-helper/date-helper';
+
 import { Trajet } from '../../model/Trajet';
 
 @IonicPage()
@@ -15,10 +17,10 @@ import { Trajet } from '../../model/Trajet';
 export class JourneyPage {
 
 	journey: Trajet;
-	journeyBelongsToCurrentUser = false;
+	journeyBelongsToCurrentUser = false;	
 
-  	constructor(public navCtrl: NavController, public navParams: NavParams, public auth: AuthServiceProvider, public firestore: FirestoreProvider, public loading: LoadingProvider) {
-  		this.loading.show("Veuillez patienter...");
+  	constructor(public navCtrl: NavController, public navParams: NavParams, public auth: AuthServiceProvider, public firestore: FirestoreProvider, public loading: LoadingProvider) {		 
+		this.loading.show("Veuillez patienter...");
   		this.journey = navParams.get('journey');
   		this.firestore.getJourneyInformation(this.journey).subscribe(queryResult => {
   			if(queryResult.success){
@@ -30,8 +32,13 @@ export class JourneyPage {
   				//TODO show error
   			}
   			this.loading.hide();
-  		});
+		  });		
   	}
+
+	getDisplayDate() : String {
+		return DateHelper.getDisplayDate(this.journey.dateDepart.toDate());
+		//Dans le HTML : {{this.getDisplayDate}} C'est censé marcher.. mais ça marche pas.. 2h41 pour faire un truc qui marche pas. Bonne soirée.
+	}
 
   	onClickButtonReserve(){
   		//TODO
