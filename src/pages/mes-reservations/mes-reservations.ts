@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, Loading } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
+import { LoadingProvider } from '../../providers/loading/loading';
 
 import { ReservationPage } from '../../pages/reservation/reservation';
 
@@ -16,12 +17,11 @@ import { Reservation } from '../../model/Reservation';
 })
 export class MesReservationsPage {
 
-	loading: Loading;
 	currentAccount: Compte;
 	reservations: Reservation[];
 
-	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider, public loadingCtrl: LoadingController) {
-		this.showLoading();
+	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider, public loading: LoadingProvider) {
+		this.loading.show('Veuillez patienter...');
 		this.currentAccount = this.auth.currentAccount;
 		this.firestore.getAccountReservations(this.currentAccount).subscribe(success => {
 			if(success){
@@ -29,7 +29,7 @@ export class MesReservationsPage {
 			} else {
 				//show error
 			}
-			this.loading.dismiss();
+			this.loading.hide();
 		});
 	}
 
@@ -38,11 +38,4 @@ export class MesReservationsPage {
   			reservation: reservation
 		});
 	}
-
-	showLoading() {
-    this.loading = this.loadingCtrl.create({
-      content: 'Veuillez patienter...',
-    });
-    this.loading.present();
-  }
 }

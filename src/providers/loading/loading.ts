@@ -9,14 +9,15 @@ export class LoadingProvider {
 
   	constructor(public loadingCtrl: LoadingController) { }
 
-  	public showLoading(message: string) {
+  	public show(message: string) {
 	    this.loading = this.loadingCtrl.create({
-	      content: message
+	      content: message,
+	      dismissOnPageChange: true
 	    });
 	    this.loading.present();
   	}
 
-  	public hideLoading(){
+  	public hide(){
   		this.loading.dismiss();
   	}
 }

@@ -22,6 +22,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { FirestoreProvider } from '../providers/firestore/firestore';
+import { LoadingProvider } from '../providers/loading/loading';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { FirestoreProvider } from '../providers/firestore/firestore';
     AngularFirestore,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthServiceProvider,
-    FirestoreProvider
+    FirestoreProvider,
+    LoadingProvider
   ]
 })
 export class AppModule {}

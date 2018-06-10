@@ -55,6 +55,19 @@ export class FirestoreProvider {
   	});
   }
 
+  public getReservationInformation(reservation: Reservation){
+  		return Observable.create(observer => {
+  			this.getReservationByReference(reservation).subscribe(reservation => {
+	  			this.getJourneyByReference(reservation.trajet).subscribe(journey => {
+	  				reservation = reservation;
+	  				reservation.trajet = journey;
+	  				observer.next(true);
+  					observer.complete();
+	  			});
+	  		});
+  		});
+  }
+
   public getAccountByReference(reference: any){
   	return Observable.create(observer => {
 		this.afDB.firestore.doc(reference.path)

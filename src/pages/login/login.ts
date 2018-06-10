@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading, IonicPage } from 'ionic-angular';
+
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import { LoadingProvider } from '../../providers/loading/loading';
 
 import { HomePage } from '../../pages/home/home';
 import { RegisterPage } from '../../pages/register/register';
@@ -10,17 +12,16 @@ import { RegisterPage } from '../../pages/register/register';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  loading: Loading;
   registerCredentials = { email: '', password: '' };
 
-  constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private alertCtrl: AlertController, private loadingCtrl: LoadingController) { }
+  constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private alertCtrl: AlertController, private loading: LoadingProvider) { }
 
   public createAccount() {
     this.navCtrl.push(RegisterPage);
   }
  
   public login() {
-    this.showLoading()
+    this.loading.show('Veuillez patienter...');
     this.auth.login(this.registerCredentials).subscribe(found => {
       if (found) {        
         this.navCtrl.setRoot(HomePage);
@@ -32,17 +33,9 @@ export class LoginPage {
         this.showError(error);
       });
   }
- 
-  showLoading() {
-    this.loading = this.loadingCtrl.create({
-      content: 'Veuillez patienter...',
-      dismissOnPageChange: true
-    });
-    this.loading.present();
-  }
- 
+  
   showError(text) {
-    this.loading.dismiss();
+    this.loading.hide();
  
     let alert = this.alertCtrl.create({
       title: 'Echec',
