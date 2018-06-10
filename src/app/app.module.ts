@@ -24,6 +24,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { FirestoreProvider } from '../providers/firestore/firestore';
 import { LoadingProvider } from '../providers/loading/loading';
 
+import { ExpandableComponent } from '../components/expandable/expandable';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -34,7 +36,8 @@ import { LoadingProvider } from '../providers/loading/loading';
     MesReservationsPage,
     MesTrajetsPage,
     RegisterPage,
-    ReservationPage
+    ReservationPage,
+    ExpandableComponent
   ],
   imports: [
     BrowserModule,

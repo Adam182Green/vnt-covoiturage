@@ -19,19 +19,48 @@ export class MesReservationsPage {
 
 	currentAccount: Compte;
 	reservations: Reservation[];
+	items: any = [];
+	//itemExpandHeight: number = 100;
 
 	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider, public loading: LoadingProvider) {
 		this.loading.show('Veuillez patienter...');
 		this.currentAccount = this.auth.currentAccount;
 		this.firestore.getAccountReservations(this.currentAccount).subscribe(queryResult => {
+			console.log('items:');
+			console.log(this.items);
 			if(queryResult.success){
-				this.reservations = queryResult.result;
+				this.items.push({
+					expanded: false,
+					name: 'En cours',
+					reservations: queryResult.result.currentReservations
+				});
+				this.items.push({
+					expanded: false,
+					name: 'Validées',
+					reservations: queryResult.result.validatedReservations
+				});
+				this.items.push({
+					expanded: false,
+					name: 'Annulées',
+					reservations: queryResult.result.cancelledReservations
+				});
 			} else {
 				//show error
 			}
 			this.loading.hide();
 		});
 	}
+
+	expandItem(item){
+        this.items.map((listItem) => {
+            if(item == listItem){
+                listItem.expanded = !listItem.expanded;
+            } else {
+                listItem.expanded = false;
+            }
+            return listItem;
+        });
+    }
 
 	onReservationClick(event, reservation) {
 		this.navCtrl.push(ReservationPage, {

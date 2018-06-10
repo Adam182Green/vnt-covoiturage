@@ -10,7 +10,7 @@
 <ion-content padding>
 	<p>Etat: {{this.reservation.etat}}</p>
 	<button ion-button (click)="onClickJourneyInformationButton()"><ion-icon name = "information-circle"></ion-icon>Informations du trajet</button>
-	<div *ngIf="reservationBelongsToCurrentUser == true">
+	<div *ngIf="reservationBelongsToCurrentUser == true && this.reservation.etat != 'annulee'">
 		<button ion-button (click)="onClickCancelReservation()">Annuler réservation</button>
 	</div>
 

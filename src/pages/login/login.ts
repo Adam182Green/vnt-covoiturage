@@ -24,6 +24,7 @@ export class LoginPage {
     this.loading.show('Veuillez patienter...');
     this.auth.login(this.registerCredentials).subscribe(found => {
       if (found) {        
+        this.loading.hide();
         this.navCtrl.setRoot(HomePage);
       } else {
         this.showError("Compte introuvable");

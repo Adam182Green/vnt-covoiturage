@@ -19,10 +19,9 @@ export class FirestoreProvider {
   	public getAccountReservations(account: Compte): Observable<FirestoreQueryResult>{
 	  	return Observable.create(observer => {
 	  		var queryResult = new FirestoreQueryResult();
-			queryResult.result = [];
+			queryResult.result = {currentReservations: [], validatedReservations: [], cancelledReservations: []};
 			this.afDB.firestore.collection('reservations')
 			.where('demandeur', '==', account.ref)
-			.where('etat', '==', 'en cours')
 			.get().then((doc) => {
 	          	if(doc.empty){
 		            observer.next(false);
@@ -33,7 +32,17 @@ export class FirestoreProvider {
 		            	reservation.ref = item.ref;
 		              	this.getJourneyByReference(reservation.trajet).subscribe(trajet => {
 			              	reservation.trajet = trajet;
-			              	queryResult.result.push(reservation);
+			              	switch(reservation.etat){
+			              		case 'en cours':
+			              			queryResult.result.currentReservations.push(reservation);
+			              			break;
+			              		case 'validee':
+			              			queryResult.result.validatedReservations.push(reservation);
+			              			break;
+			              		case 'annulee':
+			              			queryResult.result.cancelledReservations.push(reservation);
+			              			break;
+			              	}
 			            });
 			        });
 			    }
