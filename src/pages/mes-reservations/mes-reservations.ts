@@ -26,8 +26,6 @@ export class MesReservationsPage {
 		this.loading.show('Veuillez patienter...');
 		this.currentAccount = this.auth.currentAccount;
 		this.firestore.getAccountReservations(this.currentAccount).subscribe(queryResult => {
-			console.log('items:');
-			console.log(this.items);
 			if(queryResult.success){
 				this.items.push({
 					expanded: false,

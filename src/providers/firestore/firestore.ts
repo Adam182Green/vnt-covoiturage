@@ -56,8 +56,13 @@ export class FirestoreProvider {
   public getJourneyInformation(journey: Trajet): Observable<FirestoreQueryResult>{
   	return Observable.create(observer => {
   		var queryResult = new FirestoreQueryResult();
-  		this.getVehicleByReference(journey.voiture).subscribe(vehicle => {
-  			this.getAccountByReference(journey.conducteur).subscribe(account => {
+  		var vehicleRef = journey.voiture.ref ? journey.voiture.ref : journey.voiture;
+  		var driverRef = journey.conducteur.ref ? journey.conducteur.ref : journey.conducteur;
+
+  		this.getVehicleByReference(vehicleRef).subscribe(vehicle => {
+  			this.getAccountByReference(driverRef).subscribe(account => {
+  				queryResult.success = true;
+  				queryResult.result = journey;
   				queryResult.result.voiture = vehicle;
   				queryResult.result.conducteur = account;
   				observer.next(queryResult);

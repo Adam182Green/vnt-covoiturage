@@ -8,6 +8,7 @@ import { LoadingProvider } from '../../providers/loading/loading';
 import { JourneyPage } from '../../pages/journey/journey';
 
 import { Reservation } from '../../model/Reservation';
+import { Trajet } from '../../model/Trajet';
 
 @IonicPage()
 @Component({
