@@ -53,6 +53,83 @@ export class FirestoreProvider {
 	    });
   	}
 
+  	public getAccountDriverJourneys(account: Compte): Observable<FirestoreQueryResult>{
+  		return Observable.create(observer => {
+  			var queryResult = new FirestoreQueryResult();
+  			queryResult.success = true;
+  			var journeys = new Array<Trajet>();
+  			var counter = 0;
+  			var nbJourneys = account.trajetsConducteur.length;
+  			if(nbJourneys > 0){
+	  			account.trajetsConducteur.forEach(trajet => {
+	  				this.getTrajetWithAllInformation(trajet).subscribe(result => {
+	  					if(result.success){
+	  						journeys.push(result.result);
+	  					}
+	  					counter++;
+	  					if(counter == nbJourneys){
+	  						queryResult.result = journeys;
+	  						observer.next(queryResult);
+	  						observer.complete();
+	  					}
+	  				});
+	  			});
+	  		} else {
+	  			observer.next(queryResult);
+	  			observer.complete();
+	  		}
+  		});
+  	}
+
+  	public getAccountPassengerJourneys(account: Compte): Observable<FirestoreQueryResult>{
+  		return Observable.create(observer => {
+  			var queryResult = new FirestoreQueryResult();
+  			queryResult.success = true;
+  			var journeys = new Array<Trajet>();
+  			var counter = 0;
+  			var nbJourneys = account.trajetsPassager.length;
+  			if(nbJourneys > 0){
+	  			account.trajetsPassager.forEach(trajet => {
+	  				this.getTrajetWithAllInformation(trajet).subscribe(result => {
+	  					if(result.success){
+	  						journeys.push(result.result);
+	  					}
+	  					counter++;
+	  					if(counter == nbJourneys){
+	  						queryResult.result = journeys;
+	  						observer.next(queryResult);
+	  						observer.complete();
+	  					}
+	  				});
+	  			});
+	  		} else {
+	  			observer.next(queryResult);
+	  			observer.complete();
+	  		}
+  		});
+  	}
+
+  	public getTrajetWithAllInformation(reference: any): Observable<FirestoreQueryResult>{
+  		var queryResult = new FirestoreQueryResult();
+  		return Observable.create(observer => {
+  			this.getJourneyByReference(reference).subscribe(journey => {
+  				this.getAccountByReference(journey.conducteur).subscribe(driver => {
+  					this.getVehicleByReference(journey.voiture).subscribe(vehicle => {
+  						this.getAccountsByReferences(journey.passagers).subscribe(passengers => {
+  							queryResult.success = true;
+  							queryResult.result = journey;
+  							queryResult.result.conducteur = driver;
+  							queryResult.result.voiture = vehicle;
+  							queryResult.result.passagers = passengers;
+  							observer.next(queryResult);
+  							observer.complete();
+  						});
+  					});
+  				});
+  			});
+  		});
+  	}
+
   public getJourneyInformation(journey: Trajet): Observable<FirestoreQueryResult>{
   	return Observable.create(observer => {
   		var queryResult = new FirestoreQueryResult();
@@ -93,7 +170,7 @@ export class FirestoreProvider {
   		});
   }
 
-  public getAccountByReference(reference: any){
+  public getAccountByReference(reference: any): Observable<Compte>{
   	return Observable.create(observer => {
 		this.afDB.firestore.doc(reference.path)
 		.get().then((doc) => {
@@ -102,6 +179,32 @@ export class FirestoreProvider {
             observer.next(account);
           	observer.complete();
         });
+    });
+  }
+
+  public getAccountsByReferences(references: any[]): Observable<Compte[]>{
+  	var counter = 0;
+  	var nbReferences = references.length;
+  	var accounts = new Array<Compte>();
+  	return Observable.create(observer => {
+  		if(nbReferences > 0){
+	  		references.forEach(reference => {
+	  			this.afDB.firestore.doc(reference.path)
+				.get().then((doc) => {
+		            var account = doc.data() as Compte;
+		            account.ref = doc.ref;
+		            accounts.push(account);
+		            counter++;
+		            if(counter == nbReferences){
+		            	observer.next(accounts)
+		            	observer.complete();
+		            }
+	        	});
+	  		});
+	  	} else {
+	  		observer.next(accounts)
+		    observer.complete();
+	  	}
     });
   }
 

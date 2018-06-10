@@ -24,5 +24,6 @@
 	<p>Informations du véhicule:
 	{{this.journey.voiture.marque}} {{this.journey.voiture.modele}}</p>
 
-	<button ion-button (click)="onClickButtonReserve()">Réserver</button>
+	<button *ngIf="this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonCancel()">Annuler trajet</button>
+	<button *ngIf="!this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonReserve()">Réserver</button>
 </ion-content>

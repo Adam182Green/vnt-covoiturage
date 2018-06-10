@@ -7,6 +7,7 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
 import { MesReservationsPage } from '../pages/mes-reservations/mes-reservations';
+import { MesTrajetsPage } from '../pages/mes-trajets/mes-trajets';
 
 @Component({
   templateUrl: 'app.html'
@@ -24,7 +25,8 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Accueil', component: HomePage, icon: 'home' },
-      { title: 'Mes réservations', component: MesReservationsPage, icon: 'calendar' }
+      { title: 'Mes réservations', component: MesReservationsPage, icon: 'calendar' },
+      { title: 'Mes trajets', component: MesTrajetsPage, icon: 'car' }
     ];
 
   }

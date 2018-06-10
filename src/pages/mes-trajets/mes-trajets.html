@@ -1,4 +1,4 @@
-<!--<ion-header>
+<ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
@@ -8,16 +8,17 @@
 </ion-header>
 
 <ion-content>
+
   <ion-list>
-    <button ion-item *ngFor="let trajet of currentAccount.trajets" (click)="itemTapped($event, item)">
-      <ion-icon [name]="item.icon" item-start></ion-icon>
-      {{item.title}}
-      <div class="item-note" item-end>
-        {{item.note}}
+      <div detail-none (click)="expandItem(item)" ion-item *ngFor="let item of items">
+        <button><b>{{item.name}}</b></button>
+        <expandable [expandHeight]="itemExpandHeight" [expanded]="item.expanded">
+          <div *ngIf='item.expanded==true'>
+            <button ion-item *ngFor="let journey of item.journeys" (click)="onClickJourney($event, journey)">
+              {{journey.villeDepart}} - {{journey.villeArrivee}}
+            </button>
+          </div>
+        </expandable>
       </div>
-    </button>
-  </ion-list>
-  <div *ngIf="selectedItem" padding>
-    You navigated here from <b>{{selectedItem.title}}</b>
-  </div>
-</ion-content>-->
+    </ion-list>
+</ion-content>
