@@ -8,15 +8,39 @@
 
 
 <ion-content padding>
-	Départ le 32 FEVRIER ENCULÉ DE IONIC de {{this.journey.villeDepart}} à {{this.journey.villeArrivee}}.
+	<ion-grid>
+  		<ion-row>
+    		<ion-col col-12>
+     			<p>Départ le {{this.displayDate}} de {{this.journey.villeDepart}} à {{this.journey.villeArrivee}}.</p>
+    		</ion-col>
+    	</ion-row>
+  		<ion-row>
+    		<ion-col col-12>
+     		 	<p>Places restantes: {{this.journey.nombreDePlaces}}</p>
+    		</ion-col>
+ 		</ion-row>
+  		<ion-row>
+    		<ion-col col-12>
+    			<p>Informations du conducteur:</p>
+    		</ion-col>
+    	</ion-row>
+  		<ion-row>
+    		<ion-col col-md-2 col-xs-6>
+    			<img width="75%" class="card-img-top rounded-circle" *ngIf="this.journey.conducteur.sexe == 'M'" src="../../assets/imgs/avatar_male.png">
+				<img width="75%" *ngIf="this.journey.conducteur.sexe == 'F'" src="../../assets/imgs/avatar_female.png">
+    		</ion-col>
+    		<ion-col col-md-6 col-xs-6>
+    			{{this.journey.conducteur.prenom}} {{this.journey.conducteur.nom}}
+    		</ion-col>
+    	</ion-row>
+    	<ion-row>
+    		<ion-col col-12>
+    			<p>Véhicule: {{this.journey.voiture.marque}} {{this.journey.voiture.modele}}</p>
+			</ion-col>
+    	</ion-row>
+	</ion-grid>
 
-	<p>Places restantes: {{this.journey.nombreDePlaces}}</p>
-
-	<p>Informations du conducteur:
-	{{this.journey.conducteur.prenom}} {{this.journey.conducteur.nom}}</p>
-
-	<p>Informations du véhicule:
-	{{this.journey.voiture.marque}} {{this.journey.voiture.modele}}</p>
+	
 
 	<button *ngIf="this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonCancel()">Annuler trajet</button>
 	<button *ngIf="!this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonReserve()">Réserver</button>

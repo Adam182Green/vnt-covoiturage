@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class DateHelper {
+export class DateHelperProvider {
 
     constructor() {}
 
-    public getDisplayDate(date: Date) : String {
+    public getDisplayDate(date: Date) : string {
         var dayString : string;
         var monthString : string;
         const day = date.getDay().toString();        
@@ -34,6 +34,6 @@ export class DateHelper {
         else if(month === 11) monthString = "Novembre";
         else if(month === 12) monthString = "Decembre";
 
-		return dayString + ' ' + day + '/' + monthString + '/' + year;
+		return dayString + ' ' + day + ' ' + monthString + ' ' + year;
 	}
 }

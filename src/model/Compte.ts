@@ -14,6 +14,7 @@ export class Compte {
 	notesPassager: Note[];
 	prenom: string;
 	reservations: Reservation[];
+	sexe: string;
 	trajetsConducteur: Trajet[];
 	trajetsPassager: Trajet[];
 	voitures: Voiture[];

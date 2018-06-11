@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { AngularFireModule } from 'angularfire2';
@@ -21,6 +22,7 @@ import { ReservationPage } from '../pages/reservation/reservation';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { DateHelperProvider } from '../providers/date-helper/date-helper';
 import { FirestoreProvider } from '../providers/firestore/firestore';
 import { LoadingProvider } from '../providers/loading/loading';
 
@@ -66,7 +68,8 @@ import { ExpandableComponent } from '../components/expandable/expandable';
     AngularFirestore,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthServiceProvider,
-    FirestoreProvider,
+    DateHelperProvider,
+    FirestoreProvider,    
     LoadingProvider
   ]
 })
