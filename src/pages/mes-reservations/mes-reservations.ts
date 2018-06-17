@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import { DateHelperProvider } from '../../providers/date-helper/date-helper';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { LoadingProvider } from '../../providers/loading/loading';
 
@@ -22,7 +23,7 @@ export class MesReservationsPage {
 	items: any = [];
 	//itemExpandHeight: number = 100;
 
-	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider, public loading: LoadingProvider) {
+	constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private firestore: FirestoreProvider, public loading: LoadingProvider, public dateHelper: DateHelperProvider) {
 		this.loading.show('Veuillez patienter...');
 		this.currentAccount = this.auth.currentAccount;
 		this.firestore.getAccountReservations(this.currentAccount).subscribe(queryResult => {

@@ -11,13 +11,15 @@
 
   <ion-list>
       <div detail-none (click)="expandItem(item)" ion-item *ngFor="let item of items">
-        <button><b>{{item.name}}</b></button>
+        <button ion-button clear *ngIf="item.journeys"><h3>{{item.name}} ({{item.journeys.length}})</h3></button>
+        <button ion-button clear *ngIf="!item.journeys"><h3>{{item.name}}</h3></button>
         <expandable [expandHeight]="itemExpandHeight" [expanded]="item.expanded">
-          <div *ngIf='item.expanded==true'>
+          <ion-list *ngIf='item.expanded==true'>
             <button ion-item *ngFor="let journey of item.journeys" (click)="onClickJourney($event, journey)">
-              {{journey.villeDepart}} - {{journey.villeArrivee}}
+              <h2>{{journey.villeDepart}} - {{journey.villeArrivee}}</h2>
+              <h3 *ngIf="journey.dateDepart">{{this.dateHelper.getDisplayDateOfTimestamp(journey.dateDepart)}}</h3>
             </button>
-          </div>
+          </ion-list>
         </expandable>
       </div>
     </ion-list>
