@@ -3,7 +3,7 @@
     <ion-col></ion-col>
     <ion-col></ion-col>
   </ion-row>
-  <div class="login-box">
+  <ion-grid col-sm-10 col-md-10 offset-md-1>
     <form (ngSubmit)="login()" #registerForm="ngForm">
       <ion-row>
         <ion-col>
@@ -22,18 +22,18 @@
       </ion-row>
       
       <ion-row>
-        <ion-col class="signup-col">
-          <button ion-button class="submit-btn" full type="submit" [disabled]="!registerForm.form.valid">Connexion</button>
+        <ion-col>
+          <button ion-button full type="submit" [disabled]="!registerForm.form.valid">Connexion</button>
         </ion-col>
       </ion-row>
       
     </form>
     <ion-row>
     	<ion-col>
-    		<button ion-button class="register-btn" block clear (click)="createAccount()">Inscription</button>
+    		<button ion-button block clear (click)="createAccount()">Inscription</button>
     	</ion-col>
 	</ion-row>
 
 
-  </div>
+  </ion-grid>
 </ion-content>

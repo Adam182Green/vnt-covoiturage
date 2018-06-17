@@ -14,3 +14,21 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+ion-content{
+     background-image: url('../assets/imgs/background.png');
+     background-attachment: fixed;
+     background-repeat: no-repeat;
+     background-position: center;
+     background-size: cover;
+}
+
+ion-content.no-background{
+	background-image: url('../assets/imgs/avatar-male.png');
+}
+
+ion-grid{
+	border: 0px solid rgba(255, 255, 255, 1);
+	border-radius: 15px;
+	background-color: rgba(255, 255, 255, 1);
+}

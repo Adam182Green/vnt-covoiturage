@@ -7,9 +7,9 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-
-  <ion-list>
+<ion-content padding>
+  <ion-grid col-sm-10 col-md-10 offset-md-1>
+    <ion-list>
       <div detail-none (click)="expandItem(item)" ion-item *ngFor="let item of items">
         <button ion-button clear *ngIf="item.journeys"><h3>{{item.name}} ({{item.journeys.length}})</h3></button>
         <button ion-button clear *ngIf="!item.journeys"><h3>{{item.name}}</h3></button>
@@ -23,4 +23,5 @@
         </expandable>
       </div>
     </ion-list>
+  </ion-grid>
 </ion-content>

@@ -6,9 +6,8 @@
 
 </ion-header>
 
-
 <ion-content padding>
-	<ion-grid>
+	<ion-grid col-sm-10 col-md-10 offset-md-1>
   		<ion-row>
     		<ion-col col-12>
      			<p>Départ le {{this.displayDate}} de {{this.journey.villeDepart}} à {{this.journey.villeArrivee}}.</p>
@@ -25,11 +24,11 @@
     		</ion-col>
     	</ion-row>
   		<ion-row>
-    		<ion-col col-md-2 col-xs-6>
+    		<ion-col col-md-2 col-sm-6>
     			<img width="75%" class="card-img-top rounded-circle" *ngIf="this.journey.conducteur.sexe == 'M'" src="../../assets/imgs/avatar_male.png">
 				<img width="75%" *ngIf="this.journey.conducteur.sexe == 'F'" src="../../assets/imgs/avatar_female.png">
     		</ion-col>
-    		<ion-col col-md-6 col-xs-6>
+    		<ion-col col-md-6 col-sm-6>
     			{{this.journey.conducteur.prenom}} {{this.journey.conducteur.nom}}
     		</ion-col>
     	</ion-row>
@@ -38,10 +37,7 @@
     			<p>Véhicule: {{this.journey.voiture.marque}} {{this.journey.voiture.modele}}</p>
 			</ion-col>
     	</ion-row>
+		<button *ngIf="this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonCancel()">Annuler trajet</button>
+		<button *ngIf="!this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonReserve()">Réserver</button>
 	</ion-grid>
-
-	
-
-	<button *ngIf="this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonCancel()">Annuler trajet</button>
-	<button *ngIf="!this.journeyBelongsToCurrentUser" ion-button (click)="onClickButtonReserve()">Réserver</button>
 </ion-content>

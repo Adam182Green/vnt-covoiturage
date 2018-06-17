@@ -7,20 +7,21 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-
-  <ion-list>
+<ion-content padding>
+  <ion-grid col-sm-10 col-md-10 offset-md-1>
+    <ion-list>
       <div detail-none (click)="expandItem(item)" ion-item *ngFor="let item of items">
         <button ion-button clear *ngIf="item.reservations"><h3>{{item.name}} ({{item.reservations.length}})</h3></button>
         <button ion-button clear *ngIf="!item.reservations"><h3>{{item.name}}</h3></button>
         <expandable [expandHeight]="itemExpandHeight" [expanded]="item.expanded">
-          <div *ngIf='item.expanded==true'>
+          <ion-list *ngIf='item.expanded==true'>
             <button ion-item *ngFor="let reservation of item.reservations" (click)="onReservationClick($event, reservation)">
               <h2>{{reservation.trajet.villeDepart}} - {{reservation.trajet.villeArrivee}}</h2>
               <h3 *ngIf="reservation.trajet.dateDepart">{{this.dateHelper.getDisplayDateOfTimestamp(reservation.trajet.dateDepart)}}</h3>
             </button>
-          </div>
+          </ion-list>
         </expandable>
       </div>
     </ion-list>
+  </ion-grid>
 </ion-content>

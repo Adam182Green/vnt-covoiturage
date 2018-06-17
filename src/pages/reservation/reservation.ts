@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import { DateHelperProvider } from '../../providers/date-helper/date-helper';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { LoadingProvider } from '../../providers/loading/loading';
 
@@ -20,8 +21,7 @@ export class ReservationPage {
 	reservation: Reservation;
 	reservationBelongsToCurrentUser = false;
 	currentUserIsJourneyDriver = false;
-
-  	constructor(public navCtrl: NavController, public navParams: NavParams, public firestore: FirestoreProvider, public auth: AuthServiceProvider, public loading: LoadingProvider) {
+  	constructor(public navCtrl: NavController, public navParams: NavParams, public firestore: FirestoreProvider, public auth: AuthServiceProvider, public loading: LoadingProvider, public dateHelper: DateHelperProvider) {
 	  	this.loading.show('Veuillez patienter...');
 	  	this.reservation = navParams.get('reservation');
 	  	this.firestore.getReservationInformation(this.reservation).subscribe(queryResult => {

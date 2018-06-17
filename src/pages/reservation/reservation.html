@@ -6,17 +6,17 @@
 
 </ion-header>
 
-
 <ion-content padding>
-	<p>Etat: {{this.reservation.etat}}</p>
-	<p>Départ le {{this.reservation.trajet.dateDepart}} de {{this.reservation.trajet.villeDepart}} à {{this.reservation.trajet.villeArrivee}}.</p>
-	<button ion-button (click)="onClickJourneyInformationButton()"><ion-icon name = "information-circle"></ion-icon> Informations du trajet</button>
-	<div *ngIf="reservationBelongsToCurrentUser == true && this.reservation.etat != 'annulee'">
-		<button ion-button (click)="onClickCancelReservation()">Annuler réservation</button>
-	</div>
+	<ion-grid col-sm-10 col-md-10 offset-md-1>
+		<p>Etat: {{this.reservation.etat}}</p>
+		<p *ngIf="this.reservation.trajet.dateDepart">Départ le {{this.dateHelper.getDisplayDateOfTimestamp(this.reservation.trajet.dateDepart)}} de {{this.reservation.trajet.villeDepart}} à {{this.reservation.trajet.villeArrivee}}.</p>
+		<button ion-button (click)="onClickJourneyInformationButton()"><ion-icon name = "information-circle"> </ion-icon> Informations du trajet</button>
+		<div *ngIf="reservationBelongsToCurrentUser == true && this.reservation.etat != 'annulee'">
+			<button ion-button (click)="onClickCancelReservation()">Annuler réservation</button>
+		</div>
 
-	<div *ngIf="currentUserIsJourneyDriver == true">
-		<button *ngIf="this.reservation.etat == 'en cours'" ion-button (click)="onClickValidateReservation()">Valider réservation</button>
-	</div>
-
+		<div *ngIf="currentUserIsJourneyDriver == true">
+			<button *ngIf="this.reservation.etat == 'en cours'" ion-button (click)="onClickValidateReservation()">Valider réservation</button>
+		</div>
+	</ion-grid>
 </ion-content>
