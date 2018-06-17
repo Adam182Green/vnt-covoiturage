@@ -6,43 +6,50 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { Compte } from '../../model/Compte';
+import { FIREBASE_CONFIG } from "../../app/firestore.config";
+import { AngularFireAuth } from "angularfire2/auth";
 import { Reservation } from '../../model/Reservation';
+import { identity } from 'rxjs';
 
 @Injectable()
 export class AuthServiceProvider {
 
   currentAccount: Compte;
 
-  constructor(public afDB: AngularFirestore, public firestore: FirestoreProvider){}
+  constructor(public afDB: AngularFirestore, public firestore: FirestoreProvider, private afauth: AngularFireAuth){}
 
   public login(credentials) {
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Veuillez saisir vos identifiants");
     } else {
-      return Observable.create(observer => {
-
-        this.afDB.firestore.collection('comptes')
-        .where('email', '==', credentials.email)
-        .where('motDePasse', '==', credentials.password)
-        .get().then((doc) => {
-          if(doc.empty){
-             observer.next(false);
-             observer.complete();
-          } else {
-            doc.forEach(item => {
-              this.currentAccount = item.data() as Compte;
-              this.currentAccount.ref = item.ref;
-
-              /*this.currentAccount.reservations.forEach(reservation => {
-                var res = this.firestore.getReservationByReference(reservation);
-                reservation = res;
-              });*/
+      return Observable.create(async observer => {
+        await this.afauth.auth.signInWithEmailAndPassword(credentials.email, credentials.password)
+          .catch((error) => {
+            observer.next(false);
+            observer.complete();
+          })
+          .then(() => {
+            this.afDB.firestore.collection('comptes')
+            .where('email', '==', credentials.email)
+            .get().then((doc) => {
+              if(doc.empty){
+                observer.next(false);
+                observer.complete();
+              } else {
+                doc.forEach(item => {
+                  this.currentAccount = item.data() as Compte;
+                  this.currentAccount.ref = item.ref;
+                  this.currentAccount.reservations.forEach(reservation => {
+                  var res = this.firestore.getReservationByReference(reservation);
+                  reservation = res;
+                  });
+                });
+              }
+              observer.next(true);
+              observer.complete();
             });
-          }
-          observer.next(true);
-          observer.complete();
+          })
         });
-      });
     }
   }
  
@@ -50,8 +57,23 @@ export class AuthServiceProvider {
     if (credentials.firstName === null || credentials.surname === null || credentials.email === null || credentials.password === null) {
       return Observable.throw("Veuillez saisir vos identifiants");
     } else {
-      // At this point store the credentials to your backend!
-      return Observable.create(observer => {
+      return Observable.create(async observer => {
+        await this.afauth.auth.createUserWithEmailAndPassword(credentials.email, credentials.password)
+          .catch((error) => {
+            observer.next(false);
+            observer.complete();
+          })
+          .then(() => {
+            this.afDB.firestore.collection('comptes').add({
+              email: credentials.email,
+              nom: credentials.surname,
+              prenom: credentials.firstName
+            })
+            .catch((error) => {
+              observer.next(false);
+              observer.complete();
+            });
+          });
         observer.next(true);
         observer.complete();
       });
@@ -65,8 +87,14 @@ export class AuthServiceProvider {
   public logout() {
     return Observable.create(observer => {
       this.currentAccount = null;
-      observer.next(true);
-      observer.complete();
+      this.afauth.auth.signOut().then(() => {
+        observer.next(true);
+        observer.complete();
+      })
+      .catch(() => {
+        observer.next(false);
+        observer.complete();
+      });      
     });
   }
 
