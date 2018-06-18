@@ -6,13 +6,14 @@ import { LoadingProvider } from '../../providers/loading/loading';
 
 import { HomePage } from '../../pages/home/home';
 import { RegisterPage } from '../../pages/register/register';
+import { firestore } from 'firebase';
 
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  registerCredentials = { email: '', password: '' };
+  credentials = { email: '', password: '' };
 
   constructor(public navCtrl: NavController, private auth: AuthServiceProvider, private alertCtrl: AlertController, private loading: LoadingProvider) { }
 
@@ -22,7 +23,7 @@ export class LoginPage {
  
   public login() {
     this.loading.show('Veuillez patienter...');
-    this.auth.login(this.registerCredentials).subscribe(found => {
+    this.auth.login(this.credentials).subscribe(found => {
       if (found) {        
         this.loading.hide();
         this.navCtrl.setRoot(HomePage);
@@ -33,6 +34,24 @@ export class LoginPage {
       error => {
         this.showError(error);
       });
+  }
+
+  public resetPassword() {
+
+    var text = "";
+    if(this.credentials.email != "") {
+      this.auth.resetPassword(this.credentials.email);
+      text = 'Un email vient de vous être envoyé'
+    } else {
+      text = 'Veuillez entrer votre email';
+    }
+
+    let alert = this.alertCtrl.create({
+      title: 'Mot de passe oublié',
+      subTitle: text,
+      buttons: ['OK']
+    });
+    alert.present();
   }
   
   showError(text) {

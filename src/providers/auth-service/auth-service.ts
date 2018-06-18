@@ -67,12 +67,20 @@ export class AuthServiceProvider {
             this.afDB.firestore.collection('comptes').add({
               email: credentials.email,
               nom: credentials.surname,
-              prenom: credentials.firstName
+              prenom: credentials.firstName,
+              dateDeNaissance: new Date(),
+              notes: [],
+              notesConducteur: [],
+              notesPassager : [],
+              reservations : [],
+              trajetsConducteur : [],
+              trajetsPassager : [], 
+              voitures : []
             })
             .catch((error) => {
               observer.next(false);
               observer.complete();
-            });
+            })
           });
         observer.next(true);
         observer.complete();
@@ -84,6 +92,14 @@ export class AuthServiceProvider {
     return this.currentAccount;
   }
  
+  public resetPassword(email: string) {
+    var result = this.afauth.auth.sendPasswordResetEmail(email)
+      .then(() => { console.log("email sent");console.log("res:"+result);})
+      .catch((error) => {console.log(error);console.log("res:"+result);});
+      console.log(result);
+      return result;
+}
+
   public logout() {
     return Observable.create(observer => {
       this.currentAccount = null;
