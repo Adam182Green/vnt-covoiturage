@@ -149,6 +149,43 @@ export class FirestoreProvider {
   	});
   }
 
+  
+  public getJourneyAvecVilleArrivee(villeArrivee: string): Observable<FirestoreQueryResult>{
+	return Observable.create(observer => {
+		var queryResult = new FirestoreQueryResult();
+		queryResult.success = true;
+		this.afDB.firestore.collection('trajets')
+			.where('villeArrivee', '==', villeArrivee)
+			.get().then((doc) => {
+	          	if(doc.empty){
+		            observer.next(false);
+		            observer.complete();
+		        } else {
+		            doc.forEach(item => {
+		            	var trajet = item.data() as Trajet;
+		            	trajet.ref = item.ref;
+		              	this.getAccountByReference(trajet.conducteur).subscribe(conducteur => {
+							this.getVehicleByReference(trajet.voiture).subscribe(voiture => {
+								this.getAccountsByReferences(trajet.passagers).subscribe(passagers => {
+									//this.getReservationsByReferences(trajet.reservations).subscribe(reservations => {
+										trajet.conducteur = conducteur;
+										trajet.voiture = voiture;
+										trajet.passagers = passagers;
+										trajet.reservations = [];
+									//});
+								});
+							});
+			            });
+			        });
+				}
+				queryResult.result = doc;
+				queryResult.success = true;
+				observer.next(queryResult);
+				observer.complete();
+			});
+	});
+ }
+
   public getReservationInformation(reservation: Reservation): Observable<FirestoreQueryResult>{
   		return Observable.create(observer => {
   			this.getReservationByReference(reservation.ref).subscribe(resa => {
@@ -257,6 +294,6 @@ export class FirestoreProvider {
   			observer.next(false);
           	observer.complete();
   		});
-  	});
-  }
+	  });
+	}
 }
