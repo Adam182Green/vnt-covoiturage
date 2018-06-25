@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { LoadingProvider } from '../../providers/loading/loading';
@@ -10,20 +10,22 @@ import { Trajet } from '../../model/Trajet';
 
 import { LoginPage } from '../../pages/login/login';
 import { JourneyPage } from '../../pages/journey/journey';
- 
+import { DateHelperProvider } from '../../providers/date-helper/date-helper';
+
+@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
   account: Compte;
-  trajets: Trajet[];
+  trajets: any = [];
   villeRecherche: string;
 
-  constructor(private navCtrl: NavController, private auth: AuthServiceProvider, public loading: LoadingProvider, public firestore: FirestoreProvider) {
+  constructor(private navCtrl: NavController, private auth: AuthServiceProvider, public loading: LoadingProvider, public firestore: FirestoreProvider, dateHelper: DateHelperProvider) {
     this.account = this.auth.getAccount();
     this.villeRecherche = "";
-    this.trajets = [];
+    this.trajets.push(new Trajet());
   }
  
   public logout() {
@@ -39,7 +41,6 @@ export class HomePage {
   }
   
   onJourneySearchClick() {
-    console.log("jepasseparlà");
     if(this.villeRecherche != "")
     {
       this.loading.show('Veuillez patienter...');

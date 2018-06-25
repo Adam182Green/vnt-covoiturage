@@ -150,7 +150,7 @@ export class FirestoreProvider {
   }
 
   
-  public getJourneyAvecVilleArrivee(villeArrivee: string): Observable<FirestoreQueryResult>{
+  public getJourneysAvecVilleArrivee(villeArrivee: string): Observable<FirestoreQueryResult>{
 	return Observable.create(observer => {
 		var queryResult = new FirestoreQueryResult();
 		queryResult.success = true;

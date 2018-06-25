@@ -23,12 +23,12 @@
     </ion-item>
     <button ion-button name="button-RechercherVille" (click)="onJourneySearchClick">Rechercher</button>
     
-    <ion-list>
+    <ion-list [(ngModel)]="trajets">
       <ion-item *ngFor="let trajet of trajets" (click)="onTrajetClick(trajet)">
         <ion-avatar item-start>
           <img src="..\..\assets\imgs\avatar-male.png">
         </ion-avatar>
-        <h2>{{this.dateHelper.getDisplayDateOfTimestamp(trajet.dateDepart)}}</h2>
+        <h2 *ngIf="reservation.trajet.dateDepart">{{this.dateHelper.getDisplayDateOfTimestamp(trajet.dateDepart)}}</h2>
         <h3>{{trajet.villeDepart}} --> {{trajet.villeArrivee}}</h3>
         <p>{{trajet.voiture.marque}} {{trajet.voiture.modele}}</p>
       </ion-item>
