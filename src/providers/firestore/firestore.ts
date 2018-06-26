@@ -5,7 +5,6 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 import {Observable} from 'rxjs/Observable';
 
 import { Compte } from '../../model/Compte';
-import { Note } from '../../model/Note';
 import { Reservation } from '../../model/Reservation';
 import { Trajet } from '../../model/Trajet';
 import { Voiture } from '../../model/Voiture';
@@ -15,6 +14,22 @@ import { FirestoreQueryResult } from '../../model/FirestoreQueryResult';
 export class FirestoreProvider {
 
   constructor(private afDB: AngularFirestore) { }
+
+	public addReservation(demandeur: Compte, trajet: Trajet) : Observable<FirestoreQueryResult>{
+		return Observable.create(async observer => {
+			this.afDB.firestore.collection('reservations').add({
+				demandeur: demandeur.ref,
+				etat: "en cours",
+				trajet: trajet.ref
+			})
+			.catch((error) => {
+				observer.next(false);
+				observer.complete();
+			})
+			observer.next(true);
+			observer.complete();
+		});
+	}
 
   	public getAccountReservations(account: Compte): Observable<FirestoreQueryResult>{
 	  	return Observable.create(observer => {
@@ -51,7 +66,7 @@ export class FirestoreProvider {
 		        observer.complete();
 		    });
 	    });
-  	}
+	  }	
 
   	public getAccountDriverJourneys(account: Compte): Observable<FirestoreQueryResult>{
   		return Observable.create(observer => {
@@ -150,13 +165,14 @@ export class FirestoreProvider {
   }
 
   
-  public getJourneysAvecVilleArrivee(villeArrivee: string): Observable<FirestoreQueryResult>{
+  public getJourneysAvecVilleDepartVilleArrivee(villeDepart: string, villeArrivee: string): Observable<FirestoreQueryResult>{
 	return Observable.create(observer => {
 		var queryResult = new FirestoreQueryResult();
 		queryResult.result = new Array<Trajet>();
 		queryResult.success = true;
 		this.afDB.firestore.collection('trajets')
 			.where('villeArrivee', '==', villeArrivee)
+			.where('villeDepart', '==', villeDepart)
 			.get().then((doc) => {
 	          	if(doc.empty){
 		            observer.next(false);

@@ -20,24 +20,33 @@ export class JourneyPage {
 	displayDate = "";	
 
   	constructor(public navCtrl: NavController, public navParams: NavParams, public auth: AuthServiceProvider, public firestore: FirestoreProvider, public loading: LoadingProvider, public dateHelper: DateHelperProvider) {		 
+			this.getJourneyInformation();
+	  }
+	  
+	getJourneyInformation(){
 		this.loading.show("Veuillez patienter...");
-  		this.journey = navParams.get("journey");
-  		this.firestore.getJourneyInformation(this.journey).subscribe(queryResult => {
-  			if(queryResult.success){
-  				this.journey = queryResult.result;
-  				this.displayDate = this.dateHelper.getDisplayDate(this.journey.dateDepart.toDate());
-  				if(this.journey.conducteur.ref.path == this.auth.currentAccount.ref.path){
-  					this.journeyBelongsToCurrentUser = true;
-  				}
-  			} else {
-  				//TODO show error
-  			}
-  			this.loading.hide();
-		  });		
-  	}
+		this.journey = this.navParams.get("journey");
+		this.firestore.getJourneyInformation(this.journey).subscribe(queryResult => {
+			if(queryResult.success){
+				this.journey = queryResult.result;
+				this.displayDate = this.dateHelper.getDisplayDate(this.journey.dateDepart.toDate());
+				if(this.journey.conducteur.ref.path == this.auth.currentAccount.ref.path){
+					this.journeyBelongsToCurrentUser = true;
+				}
+			} else {
+				//TODO show error
+			}
+			this.loading.hide();
+		});	
+	}
 
   	onClickButtonReserve(){
-  		//TODO
+		this.loading.show("Veuillez patienter...");
+		this.firestore.addReservation(this.auth.currentAccount, this.journey).subscribe(queryResult => {
+			if(queryResult.success)
+				this.getJourneyInformation();
+			this.loading.hide();
+		});
   	}
 
   	onClickButtonCancel(){
