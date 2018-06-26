@@ -21,7 +21,7 @@ export class JourneyPage {
 
   	constructor(public navCtrl: NavController, public navParams: NavParams, public auth: AuthServiceProvider, public firestore: FirestoreProvider, public loading: LoadingProvider, public dateHelper: DateHelperProvider) {		 
 		this.loading.show("Veuillez patienter...");
-  		this.journey = navParams.get('journey');
+  		this.journey = navParams.get("journey");
   		this.firestore.getJourneyInformation(this.journey).subscribe(queryResult => {
   			if(queryResult.success){
   				this.journey = queryResult.result;

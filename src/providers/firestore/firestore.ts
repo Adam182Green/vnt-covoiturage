@@ -153,6 +153,7 @@ export class FirestoreProvider {
   public getJourneysAvecVilleArrivee(villeArrivee: string): Observable<FirestoreQueryResult>{
 	return Observable.create(observer => {
 		var queryResult = new FirestoreQueryResult();
+		queryResult.result = new Array<Trajet>();
 		queryResult.success = true;
 		this.afDB.firestore.collection('trajets')
 			.where('villeArrivee', '==', villeArrivee)
@@ -166,20 +167,13 @@ export class FirestoreProvider {
 		            	trajet.ref = item.ref;
 		              	this.getAccountByReference(trajet.conducteur).subscribe(conducteur => {
 							this.getVehicleByReference(trajet.voiture).subscribe(voiture => {
-								this.getAccountsByReferences(trajet.passagers).subscribe(passagers => {
-									//this.getReservationsByReferences(trajet.reservations).subscribe(reservations => {
-										trajet.conducteur = conducteur;
-										trajet.voiture = voiture;
-										trajet.passagers = passagers;
-										trajet.reservations = [];
-									//});
-								});
+								trajet.conducteur = conducteur;
+								trajet.voiture = voiture;
+								queryResult.result.push(trajet);
 							});
 			            });
 			        });
 				}
-				queryResult.result = doc;
-				queryResult.success = true;
 				observer.next(queryResult);
 				observer.complete();
 			});
