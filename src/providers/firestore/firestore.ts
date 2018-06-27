@@ -9,11 +9,12 @@ import { Reservation } from '../../model/Reservation';
 import { Trajet } from '../../model/Trajet';
 import { Voiture } from '../../model/Voiture';
 import { FirestoreQueryResult } from '../../model/FirestoreQueryResult';
+import { observable } from 'rxjs';
 
 @Injectable()
 export class FirestoreProvider {
 
-  constructor(private afDB: AngularFirestore) { }
+  constructor(private afDB: AngularFirestore, auth) { }
 
 	public addReservation(demandeur: Compte, trajet: Trajet) : Observable<FirestoreQueryResult>{
 		return Observable.create(async observer => {
@@ -164,7 +165,6 @@ export class FirestoreProvider {
   	});
   }
 
-  
   public getJourneysAvecVilleDepartVilleArrivee(villeDepart: string, villeArrivee: string): Observable<FirestoreQueryResult>{
 	return Observable.create(observer => {
 		var queryResult = new FirestoreQueryResult();
@@ -197,24 +197,24 @@ export class FirestoreProvider {
  }
 
   public getReservationInformation(reservation: Reservation): Observable<FirestoreQueryResult>{
-  		return Observable.create(observer => {
-  			this.getReservationByReference(reservation.ref).subscribe(resa => {
-	  			this.getJourneyByReference(resa.trajet).subscribe(journey => {
-	  				this.getAccountByReference(resa.demandeur).subscribe(asker => {
-	  					this.getAccountByReference(journey.conducteur).subscribe(driver => {
-	  						var queryResult = new FirestoreQueryResult();
-	  						queryResult.success = true;
-		  					queryResult.result = resa;
-			  				queryResult.result.trajet = journey;
-			  				queryResult.result.trajet.conducteur = driver;
-			  				queryResult.result.demandeur = asker;
-			  				observer.next(queryResult);
-		  					observer.complete();
-		  				});
-	  				});
-	  			});
-	  		});
-  		});
+	return Observable.create(observer => {
+		this.getReservationByReference(reservation.ref).subscribe(resa => {
+			this.getJourneyByReference(resa.trajet).subscribe(journey => {
+				this.getAccountByReference(resa.demandeur).subscribe(asker => {
+					this.getAccountByReference(journey.conducteur).subscribe(driver => {
+						var queryResult = new FirestoreQueryResult();
+						queryResult.success = true;
+						queryResult.result = resa;
+						queryResult.result.trajet = journey;
+						queryResult.result.trajet.conducteur = driver;
+						queryResult.result.demandeur = asker;
+						observer.next(queryResult);
+						observer.complete();
+					});
+				});
+			});
+		});
+	});
   }
 
   public getAccountByReference(reference: any): Observable<Compte>{

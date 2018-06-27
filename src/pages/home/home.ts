@@ -4,13 +4,14 @@ import { IonicPage, NavController } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { LoadingProvider } from '../../providers/loading/loading';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
+import { DateHelperProvider } from '../../providers/date-helper/date-helper';
 
 import { Compte } from '../../model/Compte';
 import { Trajet } from '../../model/Trajet';
 
 import { LoginPage } from '../../pages/login/login';
 import { JourneyPage } from '../../pages/journey/journey';
-import { DateHelperProvider } from '../../providers/date-helper/date-helper';
+import { CreateTrajetPage } from '../../pages/create-trajet/create-trajet';
 
 @Component({
   selector: 'page-home',
@@ -24,6 +25,7 @@ export class HomePage {
 
   constructor(private navCtrl: NavController, private auth: AuthServiceProvider, public loading: LoadingProvider, public firestore: FirestoreProvider, public dateHelper: DateHelperProvider) {
     this.account = this.auth.getAccount();
+    console.log(this.account);
   }
  
   public logout() {
@@ -53,5 +55,9 @@ export class HomePage {
         this.loading.hide();
       });
     }
+  }
+
+  onCreateTrajetClick() {
+    this.navCtrl.push(CreateTrajetPage, {});
   }
 }

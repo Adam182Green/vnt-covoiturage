@@ -39,10 +39,7 @@ export class AuthServiceProvider {
                 doc.forEach(item => {
                   this.currentAccount = item.data() as Compte;
                   this.currentAccount.ref = item.ref;
-                  this.currentAccount.reservations.forEach(reservation => {
-                  var res = this.firestore.getReservationByReference(reservation);
-                  reservation = res;
-                  });
+                  this.firestore.getAccountReservations(this.currentAccount);                  
                 });
               }
               observer.next(true);

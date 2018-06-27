@@ -14,8 +14,12 @@
  
 <ion-content class="home" padding>
   <ion-grid > <!--col-sm-10 col-md-10 offset-md-1-->
-
     <h3>Bienvenue, {{account.prenom}} {{account.nom}}</h3>
+    <br>
+    <ion-row>
+      <h4>Crée un trajet : </h4> 
+      <button ion-button (click)="onCreateTrajetClick()">CRÉER TRAJET</button>
+    </ion-row>
     <br>
     <h4>Recherche un trajet !</h4>
     <ion-row>
@@ -32,7 +36,7 @@
         </ion-item>
       </ion-col>
       <ion-col col-md-3>
-        <button ion-button style="position: absolute; bottom: 0; width:85%" name="button-RechercherVille" (click)="onJourneySearchClick()"><ion-icon name="search"></ion-icon></button>
+        <button ion-button style="position: absolute; bottom: 0; width:85%" (click)="onJourneySearchClick()"><ion-icon name="search"></ion-icon></button>
       </ion-col>
     </ion-row>
     
@@ -46,9 +50,6 @@
         <p>{{trajet.voiture.marque}} {{trajet.voiture.modele}}</p>
       </ion-item>
     </ion-list>
-
   </ion-grid> 
 </ion-content>
-
-
 

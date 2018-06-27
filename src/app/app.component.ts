@@ -4,7 +4,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
 import { MesReservationsPage } from '../pages/mes-reservations/mes-reservations';
 import { MesTrajetsPage } from '../pages/mes-trajets/mes-trajets';

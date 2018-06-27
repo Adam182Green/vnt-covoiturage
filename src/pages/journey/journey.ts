@@ -7,6 +7,7 @@ import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { LoadingProvider } from '../../providers/loading/loading';
 
 import { Trajet } from '../../model/Trajet';
+import { Reservation } from '../../model/Reservation';
 
 @IonicPage()
 @Component({

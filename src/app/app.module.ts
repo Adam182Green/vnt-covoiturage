@@ -18,6 +18,7 @@ import { MesReservationsPage } from '../pages/mes-reservations/mes-reservations'
 import { MesTrajetsPage } from '../pages/mes-trajets/mes-trajets';
 import { RegisterPage } from '../pages/register/register';
 import { ReservationPage } from '../pages/reservation/reservation';
+import { CreateTrajetPage } from '../pages/create-trajet/create-trajet'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -31,6 +32,7 @@ import { ExpandableComponent } from '../components/expandable/expandable';
 @NgModule({
   declarations: [
     MyApp,
+    CreateTrajetPage,
     HomePage,
     JourneyPage,
     ListPage,
@@ -52,6 +54,7 @@ import { ExpandableComponent } from '../components/expandable/expandable';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    CreateTrajetPage,
     HomePage,
     JourneyPage,
     ListPage,
