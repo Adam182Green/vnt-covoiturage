@@ -293,7 +293,6 @@ export class FirestoreProvider {
 
   public updateReservation(reservation: Reservation){
   	return Observable.create(observer => {
-  		console.log(reservation.ref);
   		this.afDB.firestore.doc(reservation.ref.path)
   		.update({'etat': reservation.etat})
   		.then(() => {
@@ -305,5 +304,42 @@ export class FirestoreProvider {
           	observer.complete();
   		});
 	  });
+	}
+
+	public deleteJourney(account: Compte, journey: Trajet){
+		return Observable.create(observer => {
+			this.afDB.firestore.doc(journey.ref.path)
+			.delete()
+			.then(() => {
+				this.afDB.firestore.collection('reservations')
+				.where("trajet", "==", journey.ref)
+				.get()
+				.then((doc) => {
+					if(doc.empty){
+			            observer.next(false);
+			            observer.complete();
+		        	} else {
+		            	doc.forEach(item => {
+		            		this.afDB.firestore.doc(item.ref.path)
+		            		.update({'etat': 'annulee'});
+		            	});
+		            }
+				})
+				.then(() => {
+					account.trajetsConducteur.splice(account.trajetsConducteur.indexOf(journey));
+					var references = Array<any>();
+					account.trajetsConducteur.forEach((journey) => {
+						references.concat(journey.ref);
+					});
+					var index = account.trajetsConducteur.indexOf(journey).toString();
+					this.afDB.firestore.doc(account.ref.path)
+					.update({ 'trajetsConducteur': references })
+					.then(() => {
+						observer.next(true);
+		 				observer.complete();
+					});
+				});
+			});
+		});
 	}
 }

@@ -51,6 +51,9 @@ export class JourneyPage {
   	}
 
   	onClickButtonCancel(){
-  		//TODO
+  		this.loading.show("Veuillez patienter...");
+  		this.firestore.deleteJourney(this.auth.currentAccount, this.journey).subscribe(result => {
+  			this.loading.hide();
+  		});
   	}
 }
