@@ -14,7 +14,7 @@ import { observable } from 'rxjs';
 @Injectable()
 export class FirestoreProvider {
 
-  constructor(private afDB: AngularFirestore, auth) { }
+  constructor(private afDB: AngularFirestore) { }
 
 	public addReservation(demandeur: Compte, trajet: Trajet) : Observable<FirestoreQueryResult>{
 		return Observable.create(async observer => {
