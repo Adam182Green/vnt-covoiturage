@@ -10,6 +10,7 @@ import { FIREBASE_CONFIG } from "../../app/firestore.config";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Reservation } from '../../model/Reservation';
 import { identity } from 'rxjs';
+import { Voiture } from '../../model/Voiture';
 
 @Injectable()
 export class AuthServiceProvider {
@@ -37,9 +38,38 @@ export class AuthServiceProvider {
                 observer.complete();
               } else {
                 doc.forEach(item => {
-                  this.currentAccount = item.data() as Compte;
+                  var cmpt = item.data() as Compte;
+                  this.currentAccount = new Compte();
+
+                  this.currentAccount.reservations = [];
+                  this.currentAccount.voitures = [];
+                  this.currentAccount.trajetsConducteur = [];
+                  this.currentAccount.trajetsPassager = [];
+
+                  cmpt.reservations.forEach(refReservation => {
+                    this.firestore.getReservationByReference(refReservation).subscribe(reservation => {
+                      this.currentAccount.reservations.push(reservation);
+                    });
+                  });
+                  cmpt.voitures.forEach(refVoiture => {
+                    this.firestore.getVehicleByReference(refVoiture).subscribe(voiture => {
+                      this.currentAccount.voitures.push(voiture);
+                    });
+                  });
+                  cmpt.trajetsConducteur.forEach(refTrajetConducteur => {
+                    this.firestore.getJourneyByReference(refTrajetConducteur).subscribe(trajet => {
+                      this.currentAccount.trajetsConducteur.push(trajet);
+                    });
+                  });
+                  cmpt.trajetsPassager.forEach(refTrajetPassager => {
+                    this.firestore.getJourneyByReference(refTrajetPassager).subscribe(trajet => {
+                      this.currentAccount.trajetsConducteur.push(trajet);
+                    });
+                  });
+                  this.currentAccount = cmpt;
                   this.currentAccount.ref = item.ref;
-                  this.firestore.getAccountReservations(this.currentAccount);                  
+
+                  console.log(this.currentAccount);
                 });
               }
               observer.next(true);

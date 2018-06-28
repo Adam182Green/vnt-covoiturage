@@ -8,6 +8,7 @@ import { DateHelperProvider } from '../../providers/date-helper/date-helper';
 
 import { Compte } from '../../model/Compte';
 import { Trajet } from '../../model/Trajet';
+import { Voiture } from '../../model/Voiture';
 
 import { LoginPage } from '../../pages/login/login';
 import { JourneyPage } from '../../pages/journey/journey';
@@ -24,8 +25,7 @@ export class HomePage {
   villeArrivee: string;
 
   constructor(private navCtrl: NavController, private auth: AuthServiceProvider, public loading: LoadingProvider, public firestore: FirestoreProvider, public dateHelper: DateHelperProvider) {
-    this.account = this.auth.getAccount();
-    console.log(this.account);
+    this.account = this.auth.getAccount();    
   }
  
   public logout() {

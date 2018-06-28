@@ -37,7 +37,7 @@
   <ion-item>
     <ion-label>Voiture</ion-label>
     <ion-select [(ngModel)]="voitures" multiple="false">
-      <ion-option *ngFor="let voiture of voitures">{{voiture.marque}} {{voiture.modele}}</ion-option>
+      <ion-option *ngFor="let voiture of voitures" [value]="voiture">{{voiture.marque}} {{voiture.modele}}</ion-option>
     </ion-select>
   </ion-item>
 </ion-content>
