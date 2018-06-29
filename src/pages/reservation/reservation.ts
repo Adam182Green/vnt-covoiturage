@@ -6,6 +6,7 @@ import { DateHelperProvider } from '../../providers/date-helper/date-helper';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { LoadingProvider } from '../../providers/loading/loading';
 
+import { HomePage } from '../../pages/home/home';
 import { JourneyPage } from '../../pages/journey/journey';
 
 import { Reservation } from '../../model/Reservation';
@@ -46,7 +47,8 @@ export class ReservationPage {
   		this.reservation.etat = 'annulee';
   		this.loading.show('Veuillez patienter...');
   		this.firestore.updateReservation(this.reservation).subscribe(success => {
-  			this.loading.hide();
+			  this.loading.hide();
+			  this.navCtrl.setRoot(HomePage);
   		});
   	}
 
@@ -54,7 +56,8 @@ export class ReservationPage {
 		this.reservation.etat = 'validee';
 		this.loading.show('Veuillez patienter...');
   		this.firestore.updateReservation(this.reservation).subscribe(success => {
-  			this.loading.hide();
+			  this.loading.hide();
+			  this.navCtrl.setRoot(HomePage);
   		});
   	}
 }

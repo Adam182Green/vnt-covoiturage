@@ -25,7 +25,7 @@ export class HomePage {
   villeArrivee: string;
 
   constructor(private navCtrl: NavController, private auth: AuthServiceProvider, public loading: LoadingProvider, public firestore: FirestoreProvider, public dateHelper: DateHelperProvider) {
-    this.account = this.auth.getAccount();    
+    this.account = this.auth.getAccount();
   }
  
   public logout() {

@@ -15,7 +15,7 @@ import { Voiture } from '../../model/Voiture';
 @Injectable()
 export class AuthServiceProvider {
 
-  currentAccount: Compte;
+  currentAccount = new Compte();
 
   constructor(public afDB: AngularFirestore, public firestore: FirestoreProvider, private afauth: AngularFireAuth){}
 
@@ -30,48 +30,8 @@ export class AuthServiceProvider {
             observer.complete();
           })
           .then(() => {
-            this.afDB.firestore.collection('comptes')
-            .where('email', '==', credentials.email)
-            .get().then((doc) => {
-              if(doc.empty){
-                observer.next(false);
-                observer.complete();
-              } else {
-                doc.forEach(item => {
-                  var cmpt = item.data() as Compte;
-                  this.currentAccount = new Compte();
-
-                  this.currentAccount.reservations = [];
-                  this.currentAccount.voitures = [];
-                  this.currentAccount.trajetsConducteur = [];
-                  this.currentAccount.trajetsPassager = [];
-
-                  cmpt.reservations.forEach(refReservation => {
-                    this.firestore.getReservationByReference(refReservation).subscribe(reservation => {
-                      this.currentAccount.reservations.push(reservation);
-                    });
-                  });
-                  cmpt.voitures.forEach(refVoiture => {
-                    this.firestore.getVehicleByReference(refVoiture).subscribe(voiture => {
-                      this.currentAccount.voitures.push(voiture);
-                    });
-                  });
-                  cmpt.trajetsConducteur.forEach(refTrajetConducteur => {
-                    this.firestore.getJourneyByReference(refTrajetConducteur).subscribe(trajet => {
-                      this.currentAccount.trajetsConducteur.push(trajet);
-                    });
-                  });
-                  cmpt.trajetsPassager.forEach(refTrajetPassager => {
-                    this.firestore.getJourneyByReference(refTrajetPassager).subscribe(trajet => {
-                      this.currentAccount.trajetsConducteur.push(trajet);
-                    });
-                  });
-                  this.currentAccount = cmpt;
-                  this.currentAccount.ref = item.ref;
-
-                  console.log(this.currentAccount);
-                });
-              }
+            this.firestore.getAccount(credentials.email).subscribe((account) => {
+              this.currentAccount = account;
               observer.next(true);
               observer.complete();
             });
@@ -116,7 +76,11 @@ export class AuthServiceProvider {
   }
  
   public getAccount() : Compte {
-    return this.currentAccount;
+    this.firestore.getAccount(this.currentAccount.email).subscribe((account) => {
+      this.currentAccount = account;
+      return this.currentAccount;
+    });
+    return new Compte();
   }
  
   public resetPassword(email: string) {

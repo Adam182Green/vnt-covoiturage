@@ -5,7 +5,7 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { DateHelperProvider } from '../../providers/date-helper/date-helper';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { LoadingProvider } from '../../providers/loading/loading';
-
+import { HomePage } from '../../pages/home/home';
 import { Trajet } from '../../model/Trajet';
 import { Reservation } from '../../model/Reservation';
 
@@ -47,13 +47,15 @@ export class JourneyPage {
 			if(queryResult.success)
 				this.getJourneyInformation();
 			this.loading.hide();
+			this.navCtrl.setRoot(HomePage);
 		});
   	}
 
   	onClickButtonCancel(){
   		this.loading.show("Veuillez patienter...");
   		this.firestore.deleteJourney(this.auth.currentAccount, this.journey).subscribe(result => {
-  			this.loading.hide();
+			  this.loading.hide();
+			  this.navCtrl.setRoot(HomePage);
   		});
   	}
 }

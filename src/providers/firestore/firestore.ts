@@ -16,6 +16,27 @@ export class FirestoreProvider {
 
   constructor(private afDB: AngularFirestore) { }
 
+	public getAccount(email: String){
+		return Observable.create((observer) => {
+			var account = new Compte();
+			this.afDB.firestore.collection('comptes')
+            .where('email', '==', email)
+            .get().then((doc) => {
+              if(doc.empty){
+                observer.next(false);
+                observer.complete();
+              } else {
+                doc.forEach(item => {
+                  account = item.data() as Compte;
+                  account.ref = item.ref;
+                  observer.next(account);
+                  observer.complete();
+                });
+              }
+            });
+		});
+	}
+
 	public addReservation(demandeur: Compte, trajet: Trajet) : Observable<FirestoreQueryResult>{
 		return Observable.create(async observer => {
 			this.afDB.firestore.collection('reservations').add({
@@ -29,6 +50,44 @@ export class FirestoreProvider {
 			})
 			observer.next(true);
 			observer.complete();
+		});
+	}
+
+	public addJourney(conducteur: Compte, trajet: Trajet) : Observable<FirestoreQueryResult>{
+		var trajets = new Array<any>();
+		console.log(trajets);
+		return Observable.create(async observer => {
+			this.afDB.firestore.collection('trajets').add({
+				conducteur: conducteur.ref,
+				dateDepart: trajet.dateDepart,
+				nombreDePlaces: trajet.nombreDePlaces,
+				passagers: [],
+				reservations: [],
+				villeArrivee: trajet.villeArrivee,
+				villeDepart: trajet.villeDepart,
+				voiture: trajet.voiture.ref
+			})
+			.then(() => {
+				this.afDB.firestore.collection('trajets')
+				.where('conducteur', '==', conducteur.ref)
+				.get().then((doc) => {
+					doc.forEach((item) => {
+						trajets.push(item.ref);
+					});
+				}).then(() => {
+					this.afDB.firestore.doc(conducteur.ref.path)
+					.update({'trajetsConducteur': trajets})
+					.then(() => {
+						observer.next(true);
+						observer.complete();
+					})
+				})
+			})
+			.catch((error) => {
+				observer.next(false);
+				observer.complete();
+			})
+			
 		});
 	}
 
@@ -71,6 +130,8 @@ export class FirestoreProvider {
 
 	public getAccountVehicules(account: Compte): Observable<FirestoreQueryResult>{
 		return Observable.create(observer => {
+			var counter = 0;
+			var nbCars = account.voitures.length;
 			var queryResult = new FirestoreQueryResult();
 			queryResult.result = new Array<Voiture>();
 			this.afDB.firestore.collection('voitures')
@@ -85,13 +146,15 @@ export class FirestoreProvider {
 						//console.log("GNIAAAAAAAAAAAAAAAAAAAAAA");
 						var voiture = item.data() as Voiture;
 						voiture.ref = item.ref;
-						console.log(voiture);
 						queryResult.result.push(voiture);
+						counter += 1;
+						if(counter == nbCars){
+							queryResult.success = true;
+							observer.next(queryResult);
+							observer.complete();
+						}
 					});
 				}
-				queryResult.success = true;
-				observer.next(queryResult);
-				observer.complete();
 		  	});
 	  	});
 	}
@@ -353,19 +416,22 @@ export class FirestoreProvider {
 		            }
 				})
 				.then(() => {
-					account.trajetsConducteur.splice(account.trajetsConducteur.indexOf(journey));
-					var references = Array<any>();
-					account.trajetsConducteur.forEach((journey) => {
-						references.concat(journey.ref);
-					});
-					var index = account.trajetsConducteur.indexOf(journey).toString();
-					this.afDB.firestore.doc(account.ref.path)
-					.update({ 'trajetsConducteur': references })
-					.then(() => {
-						observer.next(true);
-		 				observer.complete();
-					});
-				});
+					var trajets = new Array<any>();
+					this.afDB.firestore.collection('trajets')
+					.where('conducteur', '==', account.ref)
+					.get().then((doc) => {
+						doc.forEach((item) => {
+							trajets.push(item.ref);
+						});
+					}).then(() => {
+						this.afDB.firestore.doc(account.ref.path)
+						.update({'trajetsConducteur': trajets})
+						.then(() => {
+							observer.next(true);
+							observer.complete();
+						})
+					})
+				})
 			});
 		});
 	}
